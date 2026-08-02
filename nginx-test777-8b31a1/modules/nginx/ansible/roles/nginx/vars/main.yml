@@ -1,0 +1,9 @@
+---
+env:
+  RUNLEVEL: 1
+redhat_pkg:
+  - libselinux-python
+  - nginx
+ubuntu_pkg:
+  - python3-selinux
+  - nginx

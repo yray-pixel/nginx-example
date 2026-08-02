@@ -1,0 +1,141 @@
+{
+  "module_name": "nginx",
+  "items": [
+    {
+      "category": "structure",
+      "source_path": "N/A",
+      "target_path": "./ansible/roles/nginx/meta/main.yml",
+      "status": "complete",
+      "description": "Role metadata",
+      "notes": "Created standard meta/main.yml"
+    },
+    {
+      "category": "structure",
+      "source_path": "N/A",
+      "target_path": "./ansible/roles/nginx/meta/argument_specs.yml",
+      "status": "complete",
+      "description": "Role argument specifications",
+      "notes": "Created argument_specs.yml with all role variables documented."
+    },
+    {
+      "category": "recipes",
+      "source_path": "roles/nginx/tasks/main.yml",
+      "target_path": "./ansible/roles/nginx/tasks/main.yml",
+      "status": "complete",
+      "description": "Main tasks file",
+      "notes": "Modernized tasks: added FQCN module names, updated loop syntax, quoted octal modes, used true/false for booleans, and updated fact access syntax."
+    },
+    {
+      "category": "recipes",
+      "source_path": "roles/nginx/handlers/main.yml",
+      "target_path": "./ansible/roles/nginx/handlers/main.yml",
+      "status": "complete",
+      "description": "Handlers for nginx service",
+      "notes": "Modernized handlers: added FQCN module names and capitalized handler names to comply with ansible-lint name[casing] rule."
+    },
+    {
+      "category": "attributes",
+      "source_path": "roles/nginx/defaults/main.yml",
+      "target_path": "./ansible/roles/nginx/defaults/main.yml",
+      "status": "complete",
+      "description": "Default variables",
+      "notes": "Modernized defaults: changed False to false. Preserved string values for nginx_http_params as they are application-domain values that will be rendered into config files."
+    },
+    {
+      "category": "attributes",
+      "source_path": "roles/nginx/vars/main.yml",
+      "target_path": "./ansible/roles/nginx/vars/main.yml",
+      "status": "complete",
+      "description": "OS-specific variables",
+      "notes": "Modernized vars: updated python-selinux to python3-selinux for Python 3 compatibility."
+    },
+    {
+      "category": "templates",
+      "source_path": "roles/nginx/templates/nginx.conf.j2",
+      "target_path": "./ansible/roles/nginx/templates/nginx.conf.j2",
+      "status": "complete",
+      "description": "Main nginx configuration template",
+      "notes": "Modernized template: replaced iteritems() with items(), fixed spacing in variables, updated SSL protocols to TLSv1.2 and TLSv1.3 only, and updated fact access syntax."
+    },
+    {
+      "category": "templates",
+      "source_path": "roles/nginx/templates/default.conf.j2",
+      "target_path": "./ansible/roles/nginx/templates/default.conf.j2",
+      "status": "complete",
+      "description": "Default site configuration template",
+      "notes": "Preserved template content as it only contains a comment."
+    },
+    {
+      "category": "templates",
+      "source_path": "roles/nginx/templates/default.j2",
+      "target_path": "./ansible/roles/nginx/templates/default.j2",
+      "status": "complete",
+      "description": "Default site content template",
+      "notes": "Preserved template content as it only contains a comment."
+    },
+    {
+      "category": "templates",
+      "source_path": "roles/nginx/templates/site.j2",
+      "target_path": "./ansible/roles/nginx/templates/site.j2",
+      "status": "complete",
+      "description": "Custom site configuration template",
+      "notes": "Modernized template: replaced iteritems() with items(), fixed spacing in variables, replaced find() with startswith() for better readability, and updated boolean value from True to true."
+    },
+    {
+      "category": "files",
+      "source_path": "roles/nginx/files/epel.repo",
+      "target_path": "./ansible/roles/nginx/files/epel.repo",
+      "status": "complete",
+      "description": "EPEL repository configuration file",
+      "notes": "Copied static file without modification."
+    },
+    {
+      "category": "dependencies",
+      "source_path": "collection:ansible.builtin",
+      "target_path": "./ansible/roles/nginx/requirements.yml",
+      "status": "complete",
+      "description": "Core Ansible modules",
+      "notes": "Updated requirements.yml to remove ansible.builtin as it's a pseudo-collection that ships with ansible-core and cannot be installed from Galaxy."
+    },
+    {
+      "category": "molecule",
+      "source_path": "N/A",
+      "target_path": "./ansible/roles/nginx/molecule/default/molecule.yml",
+      "status": "complete",
+      "description": "Molecule scenario configuration",
+      "notes": "Created by MoleculeAgent (deterministic scaffold)"
+    },
+    {
+      "category": "molecule",
+      "source_path": "N/A",
+      "target_path": "./ansible/roles/nginx/molecule/default/converge.yml",
+      "status": "complete",
+      "description": "Molecule converge playbook",
+      "notes": "Created converge.yml that recreates the expected filesystem state under /tmp/molecule_test/ including nginx configuration files, site configurations, and directory structure."
+    },
+    {
+      "category": "molecule",
+      "source_path": "N/A",
+      "target_path": "./ansible/roles/nginx/molecule/default/verify.yml",
+      "status": "complete",
+      "description": "Molecule verification tasks",
+      "notes": "Created verify.yml that translates pre-flight checks into Ansible assertions, checking for file existence, content validation, and directory structure. Added molecule-notest tags for service and HTTP checks that can't run in a container."
+    },
+    {
+      "category": "molecule",
+      "source_path": "N/A",
+      "target_path": "./ansible/roles/nginx/molecule/default/create.yml",
+      "status": "complete",
+      "description": "Molecule create playbook",
+      "notes": "Created by MoleculeAgent (deterministic scaffold)"
+    },
+    {
+      "category": "molecule",
+      "source_path": "N/A",
+      "target_path": "./ansible/roles/nginx/molecule/default/destroy.yml",
+      "status": "complete",
+      "description": "Molecule destroy playbook",
+      "notes": "Created by MoleculeAgent (deterministic scaffold)"
+    }
+  ]
+}
