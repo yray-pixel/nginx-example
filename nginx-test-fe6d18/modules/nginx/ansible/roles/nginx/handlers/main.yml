@@ -1,0 +1,11 @@
+---
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  when: ansible_facts.services is defined and 'nginx' in ansible_facts.services
+- name: Reload nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+  when: ansible_facts.services is defined and 'nginx' in ansible_facts.services
