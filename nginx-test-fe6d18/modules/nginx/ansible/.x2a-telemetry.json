@@ -1,0 +1,9 @@
+{
+  "phase": "adversarial-migrate",
+  "started_at": "2026-08-02T13:57:25.822883",
+  "ended_at": "2026-08-02T13:57:30.166435",
+  "duration_seconds": 4.343552,
+  "agents": {},
+  "total_tool_calls": {},
+  "summary": ""
+}

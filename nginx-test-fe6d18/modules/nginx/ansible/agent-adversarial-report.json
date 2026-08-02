@@ -1,0 +1,7 @@
+{
+  "phase": "migrate",
+  "agents_run": 0,
+  "total_findings": 0,
+  "total_critical_findings": 0,
+  "agents": []
+}
