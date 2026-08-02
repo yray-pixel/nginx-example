@@ -1,0 +1,8 @@
+[
+  {
+    "name": "nginx",
+    "path": "roles/nginx",
+    "description": "Nginx web server installation and configuration for both RedHat and Debian systems with multi-platform support, custom site configurations, and SELinux compatibility.",
+    "technology": "Ansible"
+  }
+]
