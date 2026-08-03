@@ -1,0 +1,221 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    # Check if nginx configuration files exist
+    - name: Check if nginx.conf exists
+      ansible.builtin.stat:
+        path: /tmp/molecule_test/etc/nginx/nginx.conf
+      register: nginx_conf
+
+    - name: Assert nginx.conf exists
+      ansible.builtin.assert:
+        that:
+          - nginx_conf.stat.exists
+          - nginx_conf.stat.isreg
+        fail_msg: "nginx.conf file not found"
+        success_msg: "nginx.conf file exists"
+
+    # Check if sites-available and sites-enabled directories exist
+    - name: Check if sites directories exist
+      ansible.builtin.stat:
+        path: "/tmp/molecule_test/etc/nginx/{{ item }}"
+      register: sites_dirs
+      loop:
+        - sites-available
+        - sites-enabled
+
+    - name: Assert sites directories exist
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isdir
+        fail_msg: "Directory {{ item.item }} not found"
+        success_msg: "Directory {{ item.item }} exists"
+      loop: "{{ sites_dirs.results }}"
+
+    # Check if default site configuration exists
+    - name: Check if default site configuration exists
+      ansible.builtin.stat:
+        path: /tmp/molecule_test/etc/nginx/sites-available/default
+      register: default_site
+
+    - name: Assert default site configuration exists
+      ansible.builtin.assert:
+        that:
+          - default_site.stat.exists
+          - default_site.stat.isreg
+        fail_msg: "Default site configuration not found"
+        success_msg: "Default site configuration exists"
+
+    # Check if default site is enabled (symlinked)
+    - name: Check if default site is enabled
+      ansible.builtin.stat:
+        path: /tmp/molecule_test/etc/nginx/sites-enabled/default
+      register: default_site_enabled
+
+    - name: Assert default site is enabled
+      ansible.builtin.assert:
+        that:
+          - default_site_enabled.stat.exists
+          - default_site_enabled.stat.islnk
+        fail_msg: "Default site is not enabled"
+        success_msg: "Default site is enabled"
+
+    # Check if custom sites are configured
+    - name: Check if custom sites exist
+      ansible.builtin.stat:
+        path: "/tmp/molecule_test/etc/nginx/sites-available/{{ item }}"
+      register: custom_sites
+      loop:
+        - foo
+        - bar
+
+    - name: Assert custom sites exist
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+        fail_msg: "Custom site {{ item.item }} not found"
+        success_msg: "Custom site {{ item.item }} exists"
+      loop: "{{ custom_sites.results }}"
+
+    # Check if custom sites are enabled (symlinked)
+    - name: Check if custom sites are enabled
+      ansible.builtin.stat:
+        path: "/tmp/molecule_test/etc/nginx/sites-enabled/{{ item }}"
+      register: custom_sites_enabled
+      loop:
+        - foo
+        - bar
+
+    - name: Assert custom sites are enabled
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.islnk
+        fail_msg: "Custom site {{ item.item }} is not enabled"
+        success_msg: "Custom site {{ item.item }} is enabled"
+      loop: "{{ custom_sites_enabled.results }}"
+
+    # Check if EPEL repo file exists
+    - name: Check if EPEL repo file exists
+      ansible.builtin.stat:
+        path: /tmp/molecule_test/etc/yum.repos.d/epel_ansible.repo
+      register: epel_repo
+
+    - name: Assert EPEL repo file exists
+      ansible.builtin.assert:
+        that:
+          - epel_repo.stat.exists
+          - epel_repo.stat.isreg
+        fail_msg: "EPEL repo file not found"
+        success_msg: "EPEL repo file exists"
+
+    # Check if log directory exists
+    - name: Check if log directory exists
+      ansible.builtin.stat:
+        path: /tmp/molecule_test/var/log/nginx
+      register: log_dir
+
+    - name: Assert log directory exists
+      ansible.builtin.assert:
+        that:
+          - log_dir.stat.exists
+          - log_dir.stat.isdir
+        fail_msg: "Nginx log directory not found"
+        success_msg: "Nginx log directory exists"
+
+    # Check nginx configuration content
+    - name: Get nginx.conf content
+      ansible.builtin.slurp:
+        src: /tmp/molecule_test/etc/nginx/nginx.conf
+      register: nginx_conf_content
+
+    - name: Assert nginx.conf contains expected configuration
+      ansible.builtin.assert:
+        that:
+          - "'worker_processes' in (nginx_conf_content.content | b64decode)"
+          - "'worker_connections 512' in (nginx_conf_content.content | b64decode)"
+          - "'ssl_protocols TLSv1.2 TLSv1.3' in (nginx_conf_content.content | b64decode)"
+        fail_msg: "nginx.conf does not contain expected configuration"
+        success_msg: "nginx.conf contains expected configuration"
+
+    # Check if foo site configuration contains expected content
+    - name: Get foo site configuration content
+      ansible.builtin.slurp:
+        src: /tmp/molecule_test/etc/nginx/sites-available/foo
+      register: foo_site_content
+
+    - name: Assert foo site configuration contains expected content
+      ansible.builtin.assert:
+        that:
+          - "'listen 8080' in (foo_site_content.content | b64decode)"
+          - "'server_name localhost' in (foo_site_content.content | b64decode)"
+          - "'root /tmp/site1' in (foo_site_content.content | b64decode)"
+        fail_msg: "foo site configuration does not contain expected content"
+        success_msg: "foo site configuration contains expected content"
+
+    # Check if bar site configuration contains expected content
+    - name: Get bar site configuration content
+      ansible.builtin.slurp:
+        src: /tmp/molecule_test/etc/nginx/sites-available/bar
+      register: bar_site_content
+
+    - name: Assert bar site configuration contains expected content
+      ansible.builtin.assert:
+        that:
+          - "'listen 9090' in (bar_site_content.content | b64decode)"
+          - "'server_name ansible' in (bar_site_content.content | b64decode)"
+          - "'root /tmp/site2' in (bar_site_content.content | b64decode)"
+        fail_msg: "bar site configuration does not contain expected content"
+        success_msg: "bar site configuration contains expected content"
+
+    # The following checks would normally be performed but are tagged with molecule-notest
+    # since they can't run in a container environment
+
+    - name: Check if nginx service is running
+      ansible.builtin.command: systemctl status nginx
+      register: nginx_status
+      changed_when: false
+      failed_when: false
+      tags: molecule-notest
+
+    - name: Assert nginx service is running
+      ansible.builtin.assert:
+        that:
+          - nginx_status.rc == 0
+        fail_msg: "Nginx service is not running"
+        success_msg: "Nginx service is running"
+      tags: molecule-notest
+
+    - name: Check if nginx is listening on configured ports
+      ansible.builtin.command: ss -tulpn | grep nginx
+      register: nginx_ports
+      changed_when: false
+      failed_when: false
+      tags: molecule-notest
+
+    - name: Assert nginx is listening on configured ports
+      ansible.builtin.assert:
+        that:
+          - nginx_ports.rc == 0
+        fail_msg: "Nginx is not listening on configured ports"
+        success_msg: "Nginx is listening on configured ports"
+      tags: molecule-notest
+
+    - name: Check nginx configuration syntax
+      ansible.builtin.command: nginx -t
+      register: nginx_syntax
+      changed_when: false
+      failed_when: false
+      tags: molecule-notest
+
+    - name: Assert nginx configuration syntax is valid
+      ansible.builtin.assert:
+        that:
+          - nginx_syntax.rc == 0
+        fail_msg: "Nginx configuration syntax is invalid"
+        success_msg: "Nginx configuration syntax is valid"
+      tags: molecule-notest
