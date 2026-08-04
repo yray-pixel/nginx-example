@@ -1,0 +1,20 @@
+{
+  "phase": "migrate",
+  "agents_run": 2,
+  "total_findings": 3,
+  "total_critical_findings": 1,
+  "agents": [
+    {
+      "name": "Destructive Operation Boundary",
+      "findings": 0,
+      "critical_findings": 0,
+      "summary": "No destructive operations requiring safeguards were found in the Ansible roles."
+    },
+    {
+      "name": "Checklist Completeness & Path Integrity Auditor",
+      "findings": 3,
+      "critical_findings": 1,
+      "summary": "The migration checklist contains critical issues including missing source files, duplicate entries, and items referencing non-existent files that prevent safe migration."
+    }
+  ]
+}
