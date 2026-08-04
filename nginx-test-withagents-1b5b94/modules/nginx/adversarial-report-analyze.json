@@ -1,0 +1,14 @@
+{
+  "phase": "analyze",
+  "agents_run": 1,
+  "total_findings": 4,
+  "total_critical_findings": 1,
+  "agents": [
+    {
+      "name": "Checklist Completeness & Path Integrity Auditor",
+      "findings": 4,
+      "critical_findings": 1,
+      "summary": "The migration plan contains one critical issue with a missing source file and three warnings related to duplicated checklist items, incorrect source path specification, and references to external system paths in pre-flight checks."
+    }
+  ]
+}
