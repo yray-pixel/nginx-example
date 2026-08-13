@@ -1,0 +1,121 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check nginx configuration files exist
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: nginx_config_files
+      loop:
+        - /tmp/molecule_test/etc/nginx/nginx.conf
+        - /tmp/molecule_test/etc/nginx/conf.d/default.conf
+        - /tmp/molecule_test/etc/nginx/sites-available/default
+        - /tmp/molecule_test/etc/nginx/sites-available/foo
+        - /tmp/molecule_test/etc/nginx/sites-available/bar
+
+    - name: Assert nginx configuration files exist
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.size > 0
+        fail_msg: "Nginx configuration file {{ item.item }} does not exist or is empty"
+        success_msg: "Nginx configuration file {{ item.item }} exists and is not empty"
+      loop: "{{ nginx_config_files.results }}"
+
+    - name: Check nginx site symlinks exist
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: nginx_symlinks
+      loop:
+        - /tmp/molecule_test/etc/nginx/sites-enabled/default
+        - /tmp/molecule_test/etc/nginx/sites-enabled/foo
+        - /tmp/molecule_test/etc/nginx/sites-enabled/bar
+
+    - name: Assert nginx site symlinks exist and are valid
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.islnk
+        fail_msg: "Nginx symlink {{ item.item }} does not exist or is not a symlink"
+        success_msg: "Nginx symlink {{ item.item }} exists and is valid"
+      loop: "{{ nginx_symlinks.results }}"
+
+    - name: Check nginx configuration content
+      ansible.builtin.slurp:
+        src: /tmp/molecule_test/etc/nginx/nginx.conf
+      register: nginx_conf_content
+
+    - name: Assert nginx configuration contains expected settings
+      ansible.builtin.assert:
+        that:
+          - "'worker_processes' in (nginx_conf_content.content | b64decode)"
+          - "'worker_connections 512' in (nginx_conf_content.content | b64decode)"
+          - "'ssl_protocols TLSv1.2 TLSv1.3' in (nginx_conf_content.content | b64decode)"
+          - "'sendfile on' in (nginx_conf_content.content | b64decode)"
+          - "'tcp_nopush on' in (nginx_conf_content.content | b64decode)"
+          - "'tcp_nodelay on' in (nginx_conf_content.content | b64decode)"
+          - "'keepalive_timeout 65' in (nginx_conf_content.content | b64decode)"
+        fail_msg: "Nginx configuration does not contain expected settings"
+        success_msg: "Nginx configuration contains expected settings"
+
+    - name: Check site configuration content
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      register: site_conf_content
+      loop:
+        - /tmp/molecule_test/etc/nginx/sites-available/foo
+        - /tmp/molecule_test/etc/nginx/sites-available/bar
+
+    - name: Assert foo site configuration contains expected settings
+      ansible.builtin.assert:
+        that:
+          - "'listen 8080' in (site_conf_content.results[0].content | b64decode)"
+          - "'server_name localhost' in (site_conf_content.results[0].content | b64decode)"
+          - "'root /tmp/site1' in (site_conf_content.results[0].content | b64decode)"
+        fail_msg: "Foo site configuration does not contain expected settings"
+        success_msg: "Foo site configuration contains expected settings"
+
+    - name: Assert bar site configuration contains expected settings
+      ansible.builtin.assert:
+        that:
+          - "'listen 9090' in (site_conf_content.results[1].content | b64decode)"
+          - "'server_name ansible' in (site_conf_content.results[1].content | b64decode)"
+          - "'root /tmp/site2' in (site_conf_content.results[1].content | b64decode)"
+        fail_msg: "Bar site configuration does not contain expected settings"
+        success_msg: "Bar site configuration contains expected settings"
+
+    - name: Check EPEL repository file exists
+      ansible.builtin.stat:
+        path: /tmp/molecule_test/etc/yum.repos.d/epel_ansible.repo
+      register: epel_repo_file
+
+    - name: Assert EPEL repository file exists
+      ansible.builtin.assert:
+        that:
+          - epel_repo_file.stat.exists
+          - epel_repo_file.stat.size > 0
+        fail_msg: "EPEL repository file does not exist or is empty"
+        success_msg: "EPEL repository file exists and is not empty"
+
+    # The following tests would be run on a real system but are tagged to be skipped in molecule
+    # since they can't run in the container environment
+    - name: Check nginx service status
+      ansible.builtin.service_facts:
+      tags: molecule-notest
+
+    - name: Assert nginx service is running and enabled
+      ansible.builtin.assert:
+        that:
+          - "'nginx.service' in ansible_facts.services"
+          - "ansible_facts.services['nginx.service'].state == 'running'"
+          - "ansible_facts.services['nginx.service'].status == 'enabled'"
+        fail_msg: "Nginx service is not running or enabled"
+        success_msg: "Nginx service is running and enabled"
+      tags: molecule-notest
+
+    - name: Test HTTP response
+      ansible.builtin.uri:
+        url: http://localhost
+        status_code: 200
+      tags: molecule-notest
