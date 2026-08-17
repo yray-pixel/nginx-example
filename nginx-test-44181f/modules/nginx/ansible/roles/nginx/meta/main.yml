@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  role_name: nginx
+  namespace: x2a
+  author: Benno Joy
+  company: AnsibleWorks
+  description: Install and configure Nginx web server
+  license: BSD
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+    - name: Fedora
+      versions:
+        - "36"
+        - "37"
+        - "38"
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+  galaxy_tags:
+    - web
+dependencies: []
