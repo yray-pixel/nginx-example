@@ -1,0 +1,14 @@
+{
+  "phase": "analyze",
+  "agents_run": 1,
+  "total_findings": 3,
+  "total_critical_findings": 1,
+  "agents": [
+    {
+      "name": "Checklist Completeness & Path Integrity Auditor",
+      "findings": 3,
+      "critical_findings": 1,
+      "summary": "Analysis of migration artifacts revealed several issues including a missing source file reference, ungrounded modernization instructions, and a potentially problematic target path specification."
+    }
+  ]
+}
