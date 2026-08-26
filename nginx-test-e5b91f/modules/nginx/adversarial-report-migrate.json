@@ -1,0 +1,14 @@
+{
+  "phase": "migrate",
+  "agents_run": 1,
+  "total_findings": 2,
+  "total_critical_findings": 1,
+  "agents": [
+    {
+      "name": "Privilege Escalation Gate",
+      "findings": 2,
+      "critical_findings": 1,
+      "summary": "Analysis of Ansible tasks reveals implicit privilege escalation issues in the nginx role"
+    }
+  ]
+}
