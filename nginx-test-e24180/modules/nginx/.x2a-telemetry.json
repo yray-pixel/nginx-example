@@ -1,0 +1,33 @@
+{
+  "phase": "adversarial-analyze",
+  "started_at": "2026-08-27T09:51:15.704947",
+  "ended_at": "2026-08-27T09:51:58.395142",
+  "duration_seconds": 42.690195,
+  "agents": {
+    "Destructive Operation Boundary": {
+      "name": "Destructive Operation Boundary",
+      "started_at": "2026-08-27T09:51:20.017846",
+      "ended_at": "2026-08-27T09:51:58.394551",
+      "duration_seconds": 38.376705,
+      "input_tokens": 75490,
+      "output_tokens": 1708,
+      "metrics": {
+        "findings": 0,
+        "critical_findings": 0
+      },
+      "tool_calls": {
+        "list_directory": 3,
+        "read_file": 3,
+        "file_search": 4,
+        "grep_file": 5
+      }
+    }
+  },
+  "total_tool_calls": {
+    "list_directory": 3,
+    "read_file": 3,
+    "file_search": 4,
+    "grep_file": 5
+  },
+  "summary": ""
+}
