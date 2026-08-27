@@ -8,7 +8,7 @@
       "name": "Destructive Operation Boundary\"",
       "findings": 0,
       "critical_findings": 0,
-      "summary": "No destructive operations were found in the Nginx role. The role only contains constructive operations focused on installing and configuring Nginx."
+      "summary": "No destructive operations were found in the Nginx role within the workspace. The workspace contains only documentation files (migration plans and reports) but no actual Ansible code."
     }
   ]
 }
